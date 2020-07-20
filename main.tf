@@ -19,6 +19,15 @@ resource "aws_launch_template" "bastion" {
 
   user_data = var.userdata_file_content != "" ? base64encode(var.userdata_file_content) : base64encode(templatefile("${path.module}/bastion-userdata.sh", { HOSTED_ZONE_ID = var.hosted_zone_id, NAME_PREFIX = var.name_prefix }))
 
+  block_device_mappings {
+    device_name = "/dev/sda1"
+
+    ebs {
+      volume_size = 10
+      encrypted   = true
+    }
+  }
+
   tags = var.tags
 
   lifecycle {
